@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.jsoup.Jsoup;
@@ -13,7 +14,18 @@ import org.jsoup.nodes.Document;
 
 public class MainActivity extends AppCompatActivity {
     TextView responseText;
+
+    EditText inputYear;
+
     Button submitButton;
+    Button eventButton;
+    Button birthButton;
+
+
+    String yearString;
+    String baseURL;
+
+    boolean event;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,38 +33,87 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Set up the text view and button.
-        responseText =(TextView)findViewById(R.id.history_fact);
+        responseText =(TextView) findViewById(R.id.history_fact);
         submitButton =(Button) findViewById(R.id.button_submit);
+
+        // Toggleable buttons.
+        eventButton =(Button) findViewById(R.id.button_event);
+        birthButton =(Button) findViewById(R.id.button_birth);
+
+        // Whatever the user writes.
+        inputYear = (EditText) findViewById(R.id.edit_text_year);
+
+        // Default setup for searching.
+        event = true;
+        // Default year is 2019.
+        yearString = "2019";
+        // Base URL for the wiki page.
+        baseURL = "https://en.wikipedia.org/wiki/";
+
+
+
+
+        // Based on what user wants returned.
+        eventButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Execute the 'getRandomFact' class.
+                event = true;
+            }
+        });
+        // Finds famous births.
+        birthButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Execute the 'getRandomFact' class.
+                event = false;
+            }
+        });
 
 
         // Upon clicking the submit button.
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Execute the 'doit' class.
-                new doit().execute();
+                // Get the user's input as a string.
+                yearString = inputYear.getText().toString();
+
+                // Execute the 'getRandomFact' class.
+                new getRandomFact().execute();
             }
         });
 
     }
 
 
-    public class doit extends AsyncTask<Void, Void, Void> {
+    // Class gets the web page info.
+    public class getRandomFact extends AsyncTask<Void, Void, Void> {
         String words;
 
         @Override
         protected Void doInBackground(Void... voids) {
 
+            // Get an event, not a birth.
+            if (event) {
+                try {
+                    Document doc = Jsoup.connect(baseURL + yearString + "#Events").get();
 
+                    words = doc.text();
 
-            try {
+                } catch(Exception e) {e.printStackTrace();}
 
-                Document doc = Jsoup.connect("https://en.wikipedia.org/wiki/AD_98").get();
+            }
 
-                words = doc.text();
+            // Otherwise, get a birth.
+            else {
+                try {
+                    Document doc = Jsoup.connect(baseURL + yearString + "#Births").get();
 
-            } catch(Exception e) {e.printStackTrace();}
+                    words = doc.text();
 
+                } catch(Exception e) {e.printStackTrace();}
+
+            }
 
 
             return null;
