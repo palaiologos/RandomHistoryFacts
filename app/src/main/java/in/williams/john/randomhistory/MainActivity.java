@@ -11,6 +11,12 @@ import android.widget.TextView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     TextView responseText;
@@ -96,9 +102,25 @@ public class MainActivity extends AppCompatActivity {
             // Get an event, not a birth.
             if (event) {
                 try {
-                    Document doc = Jsoup.connect(baseURL + yearString + "#Events").get();
+                    // Make array of strings to hold our facts.
+                    List<String> factsList = new ArrayList<>();
+                    // Get the entire web page.
+                    Document doc = Jsoup.connect(baseURL + yearString).get();
+                    // Get the unordered lists under the div.
+                    Elements ul = doc.select("div.mw-parser-output > ul");
+                    
+                    // Get each unordered list in this section.
+                    for (Element element : ul) {
+                        // Get the size of the <li> elements
+                        Elements li = ul.select("li");
+                        // Loop through each <li> element and append to facts list.
+                        for (int i = 0; i < li.size(); i++) {
+                            factsList.add(li.get(i).text());
+                        }
+                    }
 
-                    words = doc.text();
+                    // Print out a random fact based on random function.
+                    words = factsList.get(makeRandomNum(factsList.size()));
 
                 } catch(Exception e) {e.printStackTrace();}
 
@@ -107,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
             // Otherwise, get a birth.
             else {
                 try {
-                    Document doc = Jsoup.connect(baseURL + yearString + "#Births").get();
+                    Document doc = Jsoup.connect(baseURL + yearString).get();
 
                     words = doc.text();
 
@@ -126,4 +148,20 @@ public class MainActivity extends AppCompatActivity {
             responseText.setText(words);
         }
     }
+
+    // Generate a random number for fact printing.
+    public int makeRandomNum(int maxSize) {
+        Random rand = new Random();
+
+        // Make random num.
+        int randomNum = rand.nextInt((maxSize - 0) + 1);
+
+        return randomNum;
+    }
+
+
+
+
+
+
 }
