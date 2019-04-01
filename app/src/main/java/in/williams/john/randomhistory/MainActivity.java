@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Class gets the web page info.
     public class getRandomFact extends AsyncTask<Void, Void, Void> {
-        String words;
+        String words = "";
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -104,20 +104,43 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     // Make array of strings to hold our facts.
                     List<String> factsList = new ArrayList<>();
+                    // URL.
+                    String fullURL = baseURL + yearString;
                     // Get the entire web page.
-                    Document doc = Jsoup.connect(baseURL + yearString).get();
+                    Document doc = Jsoup.connect(fullURL).get();
                     // Get the unordered lists under the div.
-                    Elements ul = doc.select("div.mw-parser-output > ul");
-                    
-                    // Get each unordered list in this section.
-                    for (Element element : ul) {
-                        // Get the size of the <li> elements
-                        Elements li = ul.select("li");
-                        // Loop through each <li> element and append to facts list.
-                        for (int i = 0; i < li.size(); i++) {
-                            factsList.add(li.get(i).text());
+                    Element div = doc.select("div.mw-parser-output").first();
+                    // Get all the children of the div.
+                    Element element = div.children().first();
+                    // Counter to check how many <h2> tags we've seen.
+                    int flag = 0;
+
+                    // While we have only seen one <h2> tag, keep looping.
+                    while (flag <= 1) {
+                        // If an <h2> appears, increment flag counter.
+                        if (element.tagName() == "h2" ) {
+                            flag++;
+                            // Break out if we hit another section.
+                            if (flag > 1) {
+                                break;
+                            }
                         }
-                    }
+                        // Else, it's normal and we continue to find <ul> elements.
+                        else {
+                            // If we find an <ul>, get all its <li> elements.
+                            if (element.tagName().equals("ul") ) {
+                                // Get all <li> items.
+                                Elements li = element.children();
+                                int size = li.size();
+                                // Put each <li> text into our factsList array list.
+                                for (int i = 0; i < size; i++) {
+                                    factsList.add(li.get(i).text());
+                                }
+                            }
+                        }
+                        // Progress to next sibling.
+                        element = element.nextElementSibling();
+                    } // End looping through all div children.
 
                     // Print out a random fact based on random function.
                     words = factsList.get(makeRandomNum(factsList.size()));
