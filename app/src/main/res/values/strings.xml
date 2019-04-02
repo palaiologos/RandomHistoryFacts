@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">RandomHistory</string>
+    <string name="instructions">Enter desired year in the search box.</string>
+    <string name="read_more">Read More</string>
 </resources>

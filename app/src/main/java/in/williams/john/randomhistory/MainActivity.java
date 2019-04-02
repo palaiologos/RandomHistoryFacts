@@ -4,6 +4,8 @@ import android.os.AsyncTask;
 import android.provider.DocumentsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +23,7 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
     // Layout features.
     TextView responseText;
+    TextView readMoreLinkText;
     EditText inputYear;
     Button submitButton;
 
@@ -28,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     String yearString;
     String baseURL;
     String reformedYearString;
+    String fullURL;
 
     boolean event;
     boolean bc;
@@ -38,7 +42,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Set up the text view and button.
-        responseText =(TextView) findViewById(R.id.history_fact);
+        responseText = (TextView) findViewById(R.id.history_fact);
+        readMoreLinkText = (TextView) findViewById(R.id.read_more);
         submitButton =(Button) findViewById(R.id.button_submit);
 
         // Whatever the user writes.
@@ -50,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         // Default year is 2019.
         yearString = "2019";
         reformedYearString = "";
+        String fullURL = "";
 
         // Base URL for the wiki page.
         baseURL = "https://en.wikipedia.org/wiki/";
@@ -86,8 +92,6 @@ public class MainActivity extends AppCompatActivity {
                 // Make array of strings to hold our facts.
                 List<String> factsList = new ArrayList<>();
 
-                String fullURL = "";
-
                 // URL determination.
                 if (bc) {
                     fullURL = baseURL + reformedYearString + "_BC";
@@ -123,6 +127,8 @@ public class MainActivity extends AppCompatActivity {
                             int size = li.size();
                             // Put each <li> text into our factsList array list.
                             for (int i = 0; i < size; i++) {
+
+                                // Otherwise, proceed as normal.
                                 String fact = li.get(i).text();
                                 // Do not add empty facts.
                                 if (fact.length() > 0) {
@@ -153,7 +159,14 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
+            // Deliver fact to text view.
             responseText.setText(words);
+
+            // Set textview link to wiki page.
+            readMoreLinkText.setClickable(true);
+            readMoreLinkText.setMovementMethod(LinkMovementMethod.getInstance());
+            String text = "<a href=" + fullURL + ">Read More</a>";
+            readMoreLinkText.setText((Html.fromHtml(text)));
         }
     }
 

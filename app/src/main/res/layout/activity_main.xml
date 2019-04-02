@@ -18,19 +18,15 @@
         android:layout_marginTop="30dp"
         android:layout_alignParentBottom="true">
 
-        <Button
-            android:id="@+id/button_event"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" android:text="EVENT">
-        </Button>
-        <Button
-            android:id="@+id/button_birth"
+        <TextView
+            android:id="@+id/textview_instructions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="BIRTH">
-        </Button>
+            android:gravity="center"
+            android:textSize="22dp"
+            android:text="@string/instructions">
+        </TextView>
 
     </LinearLayout>
 
@@ -40,7 +36,7 @@
         android:layout_height="45dp"
         android:layout_marginTop="20dp"
         android:background="#ffffff"
-        android:hint="Enter  Year"
+        android:hint="Year"
         android:gravity="center"
         android:paddingLeft="2dp" />
 
@@ -58,8 +54,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:background="#ffffff"
-        />
+        android:background="#ffffff" />
+
+    <TextView
+        android:id="@+id/read_more"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:background="#ffffff" />
 
 
 
