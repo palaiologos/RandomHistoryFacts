@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -50,10 +51,9 @@ public class MainActivity extends AppCompatActivity {
         inputYear = (EditText) findViewById(R.id.edit_text_year);
 
         // Default setup for searching.
-        event = true;
         bc = false;
         // Default year is 2019.
-        yearString = "2019";
+        yearString = "";
         reformedYearString = "";
         String fullURL = "";
 
@@ -73,8 +73,15 @@ public class MainActivity extends AppCompatActivity {
                 // Remove all non-digit parts of the string with regex.
                 reformedYearString = yearString.replaceAll("\\D+", "");
 
-                // Execute the 'getRandomFact' class.
-                new getRandomFact().execute();
+                // If string is empty after removing digits, toast.
+                if (reformedYearString.length() < 1) {
+                    Toast.makeText(MainActivity.this, "Please enter a valid year", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    // Execute the 'getRandomFact' class.
+                    new getRandomFact().execute();
+                }
+
             }
         });
 
@@ -101,60 +108,66 @@ public class MainActivity extends AppCompatActivity {
 
                 // Get the entire web page.
                 Document doc = Jsoup.connect(fullURL).get();
+
                 // Get the unordered lists under the div.
                 Element div = doc.select("div.mw-parser-output").first();
-                // Get all the children of the div.
-                Element element = div.children().first();
-                // Counter to check how many <h2> tags we've seen.
-                int flag = 0;
+                Element notext = doc.select("div#noarticletext").first();
 
-                // While we have only seen one <h2> tag, keep looping.
-                while (flag <= 1) {
-                    // If an <h2> appears, increment flag counter.
-                    if (element.tagName() == "h2" ) {
-                        flag++;
-                        // Break out if we hit another section.
-                        if (flag > 1) {
-                            break;
+                if (notext != null) {
+                    Toast.makeText(MainActivity.this, "Please enter a valid year", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    // Get all the children of the div.
+                    Element element = div.children().first();
+                    // Counter to check how many <h2> tags we've seen.
+                    int flag = 0;
+
+                    // While we have only seen one <h2> tag, keep looping.
+                    while (flag <= 1) {
+                        // If an <h2> appears, increment flag counter.
+                        if (element.tagName() == "h2" ) {
+                            flag++;
+                            // Break out if we hit another section.
+                            if (flag > 1) {
+                                break;
+                            }
                         }
-                    }
-                    // Else, it's normal and we continue to find <ul> elements.
-                    else {
-                        // If we find an <ul>, get all its <li> elements.
-                        if (element.tagName().equals("ul") ) {
-                            // Get all <li> items.
-                            Elements li = element.children();
-                            int size = li.size();
-                            // Put each <li> text into our factsList array list.
-                            for (int i = 0; i < size; i++) {
+                        // Else, it's normal and we continue to find <ul> elements.
+                        else {
+                            // If we find an <ul>, get all its <li> elements.
+                            if (element.tagName().equals("ul") ) {
+                                // Get all <li> items.
+                                Elements li = element.children();
+                                int size = li.size();
+                                // Put each <li> text into our factsList array list.
+                                for (int i = 0; i < size; i++) {
 
-                                // Otherwise, proceed as normal.
-                                String fact = li.get(i).text();
-                                // Do not add empty facts.
-                                if (fact.length() > 0) {
-                                    factsList.add(fact);
+                                    // Otherwise, proceed as normal.
+                                    String fact = li.get(i).text();
+                                    // Do not add empty facts.
+                                    if (fact.length() > 0) {
+                                        factsList.add(fact);
+                                    }
                                 }
                             }
                         }
+                        // Progress to next sibling.
+                        element = element.nextElementSibling();
+                    } // End looping through all div children.
+
+                    // Print out a random fact based on random function.
+                    words = factsList.get(makeRandomNum(factsList.size()));
+
+                    if (words.isEmpty()) {
+                        words = "Could not find any information on that year.";
                     }
-                    // Progress to next sibling.
-                    element = element.nextElementSibling();
-                } // End looping through all div children.
 
-                // Print out a random fact based on random function.
-                //words = factsList.get(makeRandomNum(factsList.size()));
-                int size = factsList.size();
-                int rando = makeRandomNum(factsList.size());
-                words += "Size: " + Integer.toString(size) + ", ";
-                words += "Random num: " + Integer.toString(rando) + ", ";
-                words += factsList.get(rando) + "\n";
+                } // End valid web page - else.
 
-                /*
-                for (int i = 0; i < factsList.size(); i++) {
-                    words += factsList.get(i);
-                }
-                */
-            } catch(Exception e) {e.printStackTrace();}
+            }
+            // Error reporting.
+            catch(Exception e) {e.printStackTrace();
+            words = "Could not find any information on that year."; }
 
 
             return null;
@@ -193,7 +206,5 @@ public class MainActivity extends AppCompatActivity {
 
         return false;
     }
-
-
 
 }
