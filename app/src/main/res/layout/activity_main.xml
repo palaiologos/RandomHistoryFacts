@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:background="#bfbfbf"
+    android:background="#FCFCFC"
     tools:openDrawer="start">
 
     <!-- For buttons to be side-by-side -->
@@ -15,7 +15,6 @@
         android:id="@+id/LinearLayout02"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_marginTop="1dp"
         android:layout_alignParentBottom="true">
 
         <TextView
