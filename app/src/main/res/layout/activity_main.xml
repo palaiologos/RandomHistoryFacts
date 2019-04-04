@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:background="#702670"
+    android:background="#006600"
     tools:openDrawer="start">
 
     <!-- For buttons to be side-by-side -->
