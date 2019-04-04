@@ -142,7 +142,12 @@ public class MainActivity extends AppCompatActivity {
                 } // End looping through all div children.
 
                 // Print out a random fact based on random function.
-                words = factsList.get(makeRandomNum(factsList.size()));
+                //words = factsList.get(makeRandomNum(factsList.size()));
+                int size = factsList.size();
+                int rando = makeRandomNum(factsList.size());
+                words += "Size: " + Integer.toString(size) + ", ";
+                words += "Random num: " + Integer.toString(rando) + ", ";
+                words += factsList.get(rando) + "\n";
 
                 /*
                 for (int i = 0; i < factsList.size(); i++) {
@@ -165,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
             // Set textview link to wiki page.
             readMoreLinkText.setClickable(true);
             readMoreLinkText.setMovementMethod(LinkMovementMethod.getInstance());
-            String text = "<a href=" + fullURL + ">Read More</a>";
+            String text = "<a href=" + fullURL + ">Read More..</a>";
             readMoreLinkText.setText((Html.fromHtml(text)));
         }
     }
@@ -175,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         Random rand = new Random();
 
         // Make random num.
-        int randomNum = rand.nextInt((maxSize - 0) + 1);
+        int randomNum = rand.nextInt((maxSize - 0));
 
         return randomNum;
     }
