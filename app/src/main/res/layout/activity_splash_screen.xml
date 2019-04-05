@@ -30,7 +30,7 @@
         android:paddingTop="90dp"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="#663300"
+        android:textColor="#010101"
         android:textAlignment="center"
         android:text="@string/splash_text" />
 

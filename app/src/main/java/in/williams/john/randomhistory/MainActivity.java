@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     String reformedYearString;
     String fullURL;
 
-    boolean event;
+    // Flag to decide if BC or AD year.
     boolean bc;
 
     @Override
@@ -111,11 +111,14 @@ public class MainActivity extends AppCompatActivity {
 
                 // Get the unordered lists under the div.
                 Element div = doc.select("div.mw-parser-output").first();
+                // Check if there is no article.
                 Element notext = doc.select("div#noarticletext").first();
 
+                // If the wiki page is blank for this year, then toast and try again.
                 if (notext != null) {
-                    Toast.makeText(MainActivity.this, "Please enter a valid year", Toast.LENGTH_SHORT).show();
+                    words = "Could not find any information on that year.";
                 }
+                // Otherwise, the wiki page has content and can be parsed.
                 else {
                     // Get all the children of the div.
                     Element element = div.children().first();
@@ -183,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
             // Set textview link to wiki page.
             readMoreLinkText.setClickable(true);
             readMoreLinkText.setMovementMethod(LinkMovementMethod.getInstance());
-            String text = "<a href=" + fullURL + ">Read More..</a>";
+            String text = "<a href=" + fullURL + ">READ MORE</a>";
             readMoreLinkText.setText((Html.fromHtml(text)));
         }
     }
