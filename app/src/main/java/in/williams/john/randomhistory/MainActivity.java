@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
             // Set textview link to wiki page.
             readMoreLinkText.setClickable(true);
             readMoreLinkText.setMovementMethod(LinkMovementMethod.getInstance());
-            String text = "<a href=" + fullURL + ">READ MORE</a>";
+            String text = "<a href=" + fullURL + ">LEARN MORE</a>";
             readMoreLinkText.setText((Html.fromHtml(text)));
         }
     }
